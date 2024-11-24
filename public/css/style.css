@@ -1,0 +1,155 @@
+* {
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+}
+
+.folders_nav {
+    width: 220px;
+    border: 3px solid #2B2B2B;
+    /* padding: 8px 8px; */
+    border-radius: 4px;
+    background-color: #252526;
+    color: #e3e3e3;
+    overflow-x: scroll;
+    height: 500px;
+
+    scrollbar-width: thin;
+    scrollbar-color: #888 #2B2B2B;
+}
+
+.folder_icon {
+    width: 12%;
+    margin-right: 8px;
+}
+
+.folder_name {
+    font-size: 14px;
+}
+
+.folder {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    margin-left: 24px;
+}
+
+.folder_parent {
+    display: flex;
+    align-items: center;
+    /* gap: 8px; */
+    cursor: pointer;
+    width: 100%;
+}
+
+.folder_open_icon_wrapper {
+    padding-left: 4px;
+    padding-right: 8px;
+}
+
+.folder_parent:hover {
+    background-color: #3e3e3e;
+}
+
+.folder_parent__opened {
+    background-color: #4a4a4a;
+}
+
+.folder_open_icon {
+    width: 10px;
+}
+
+.folder_wrapper {
+    position: relative;
+    left: 24px;
+    user-select: none;
+    
+}
+
+.folder_root_wrapper {
+    position:static;
+}
+
+.files_panel {
+    border: 3px solid #2B2B2B;
+    background-color: #252526;
+    color: #e3e3e3;
+    width: 550px;
+    border-radius: 4px;
+}
+
+.filemanager_main {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 16px;
+    background-color: #252526;
+    border-radius: 4px;
+}
+
+
+.folders_nav::-webkit-scrollbar {
+    width: 10px;
+}
+   
+.folders_nav::-webkit-scrollbar-track {
+    background-color: #2B2B2B;
+}
+
+.folders_nav::-webkit-scrollbar-thumb {
+    background-color: #888;
+}
+
+.metadata_block {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 2px solid #2B2B2B;
+    padding: 8px;
+    font-size: 12px;
+    padding-left: 12px;
+}
+
+.metadata_name {
+    width: 40%;
+}
+
+.metadata_changedate, .file_changedate {
+    width: 32%;
+}
+
+.metadata_type, .metadata_size, .file_type, .file_size {
+    width: 14%;
+}
+
+.files_list {
+    padding: 8px 0px;
+}
+
+.file_metadata {
+    overflow: hidden;
+}
+
+.file_block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 2px solid #2B2B2B;
+    padding: 8px 0px;
+    padding-left: 12px;
+    cursor: pointer;
+}
+
+.file_block:hover {
+    background-color: #3e3e3e;
+}
+
+.file_icon {
+    width: 4%;
+    margin-right: 2%;
+}
+
+.file_name {
+    width: 31%;
+    margin-right: 2%;
+    overflow: hidden;
+}
