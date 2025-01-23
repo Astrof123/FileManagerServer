@@ -152,6 +152,32 @@ app.post('/upload', upload.array('files'), (req, res) => {
 });
 
 
+app.post('/removeFileOrFolder', (req, res) => {
+    const data = req.body;
+
+    try {
+        const filePath = __dirname + files_root + data.path;
+        console.log(filePath)
+
+        let filestats = fs.statSync(filePath);
+
+        if (filestats.isFile()) {
+            fs.unlinkSync(filePath)
+        }
+        else {
+            fs.rmSync(filePath, { recursive: true }, (err) => {
+                if (err) {
+                    return res.status(400).send('Recursive folder deletion error');
+                }
+            });
+        }
+    
+        res.send('File or folder successfully deleted.');
+    } catch (error) {
+        return res.status(400).send('Unexpected error');
+    } 
+
+});
 
 const PORT = 3000
 

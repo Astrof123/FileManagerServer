@@ -125,7 +125,7 @@ class MyFileManagerServer extends FileManagerServer {
             body: body
         });
 
-        if (response.ok) {
+        if (res.ok) {
             console.log("Всё ок!");
             return true;
         } 
