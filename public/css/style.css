@@ -51,7 +51,7 @@
     background-color: #3e3e3e;
 }
 
-.folder_parent__opened, .opened {
+.folder_parent__opened, .openedFile {
     background-color: #4a4a4a;
 }
 

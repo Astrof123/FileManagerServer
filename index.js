@@ -157,7 +157,6 @@ app.post('/removeFileOrFolder', (req, res) => {
 
     try {
         const filePath = __dirname + files_root + data.path;
-        console.log(filePath)
 
         let filestats = fs.statSync(filePath);
 
@@ -176,8 +175,28 @@ app.post('/removeFileOrFolder', (req, res) => {
     } catch (error) {
         return res.status(400).send('Unexpected error');
     } 
-
 });
+
+
+app.post('/renameFileOrFolder', (req, res) => {
+    const data = req.body;
+
+    try {
+        const fileOldPath = __dirname + files_root + data.oldPath;
+        const fileNewPath = __dirname + files_root + data.newPath;
+
+        fs.rename(fileOldPath, fileNewPath, (err) => {
+            if (err) {
+                return res.status(400).send('Renaming error');
+            }
+        });
+    
+        res.send('File or folder successfully renamed.');
+    } catch (error) {
+        return res.status(400).send('Unexpected error');
+    } 
+});
+
 
 const PORT = 3000
 
