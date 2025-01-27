@@ -10,6 +10,22 @@ let uploading = false;
 let folderName = "";
 let onlyFile = false;
 
+
+function findDuplicates(name, filePath) {
+    const files = fs.readdirSync(filePath);
+    let count_duplicate = 0;
+    let buffer_check = name;
+
+    while (files.includes(buffer_check)) {
+        count_duplicate += 1;
+        buffer_check = name + ` (${count_duplicate})`
+    }
+
+    return buffer_check;
+}
+
+
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const data = req.body;
@@ -22,16 +38,8 @@ const storage = multer.diskStorage({
 
             if (!uploading) {
                 uploading = true;
-                const files = fs.readdirSync(uploadPath);
-                let count_duplicate = 0;
-                let buffer_check = folderName;
-
-                while (files.includes(buffer_check)) {
-                    count_duplicate += 1;
-                    buffer_check = folderName + ` (${count_duplicate})`
-                }
-
-                folderName = buffer_check;
+            
+                folderName = findDuplicates(folderName, uploadPath);
             }
 
             uploadPath = uploadPath + `/${folderName}`;
@@ -47,17 +55,10 @@ const storage = multer.diskStorage({
         if (onlyFile) {
             const data = req.body;
             let uploadPath = __dirname + files_root + data.path;
-            const files = fs.readdirSync(uploadPath);
 
-            let count_duplicate = 0;
-            let buffer_check = file.originalname;
+            let name = findDuplicates(file.originalname, uploadPath);
 
-            while (files.includes(buffer_check)) {
-                count_duplicate += 1;
-                buffer_check = file.originalname + ` (${count_duplicate})`
-            }
-
-            cb(null, buffer_check.trim());
+            cb(null, name.trim());
         }
         else {
             cb(null, file.originalname.trim());
@@ -134,7 +135,6 @@ app.post('/getFiles', (req, res) => {
     
 })
 
-
 app.post('/upload', upload.array('files'), (req, res) => {
     uploading = false;
     onlyFile = false;
@@ -145,12 +145,11 @@ app.post('/upload', upload.array('files'), (req, res) => {
             return res.status(400).send('The folder or file was not uploaded');
         }
     
-        res.send('Folder/file uploaded successfully.');
+        return res.send('Folder/file uploaded successfully.');
     } catch (error) {
         return res.status(400).send('Unexpected error');
     } 
 });
-
 
 app.post('/removeFileOrFolder', (req, res) => {
     const data = req.body;
@@ -164,34 +163,42 @@ app.post('/removeFileOrFolder', (req, res) => {
             fs.unlinkSync(filePath)
         }
         else {
-            fs.rmSync(filePath, { recursive: true }, (err) => {
-                if (err) {
-                    return res.status(400).send('Recursive folder deletion error');
-                }
-            });
+            try {
+                fs.rmSync(filePath, { recursive: true }, (err) => {
+                    if (err) {
+                        throw error;
+                    }
+                });
+            }
+            catch (error) {
+                return res.status(400).send(error);
+            }
         }
     
-        res.send('File or folder successfully deleted.');
+        return res.send('File or folder successfully deleted.');
     } catch (error) {
         return res.status(400).send('Unexpected error');
     } 
 });
 
-
 app.post('/renameFileOrFolder', (req, res) => {
     const data = req.body;
-
     try {
         const fileOldPath = __dirname + files_root + data.oldPath;
-        const fileNewPath = __dirname + files_root + data.newPath;
+        let paths = data.newPath.split("/");
 
-        fs.rename(fileOldPath, fileNewPath, (err) => {
-            if (err) {
-                return res.status(400).send('Renaming error');
-            }
-        });
-    
-        res.send('File or folder successfully renamed.');
+        let filename = findDuplicates(paths[paths.length - 1], __dirname + files_root + paths.slice(0, paths.length - 1).join("/"));
+        paths[paths.length - 1] = filename;
+
+        const fileNewPath = __dirname + files_root + paths.join("/");
+
+        try {
+            fs.renameSync(fileOldPath, fileNewPath);
+        } catch (err) {
+            return res.status(400).send('Renaming error');
+        }
+
+        return res.send('File or folder successfully renamed.');
     } catch (error) {
         return res.status(400).send('Unexpected error');
     } 
