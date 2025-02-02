@@ -45,7 +45,15 @@ function copyDir(sourceDir, destinationDir) {
                 copyDir(sourcePath, destinationPath);
             } 
             else if (entry.isFile()) {
-                fs.copyFile(sourcePath, destinationPath);
+                let error = fs.copyFile(sourcePath, destinationPath, (err) => {
+                    if (err) {
+                        return Error(err);
+                    }
+                });
+
+                if (error) {
+                    throw error;
+                }
             }
         }
     } catch (err) {
@@ -244,19 +252,25 @@ app.post('/duplicateFileOrFolder', (req, res) => {
 
         try {
             if (filestats.isFile()) { 
-                fs.copyFile(fileOldPath, fileNewPath, (err) => {
+                let error = fs.copyFile(fileOldPath, fileNewPath, (err) => {
                     if (err) {
-                        console.error('Ошибка при копировании файла:', err);
-                        return;
+                        return Error(err);
                     }
-                    console.log('Файл успешно скопирован.');
                 });
+
+                if (error) {
+                    throw error;
+                }
             }
             else {
                 copyDir(fileOldPath, fileNewPath);
             }
         }
         catch (err) {
+            if (err.contains("EPERM")) {
+                return res.status(500).send('Copying is not permitted');
+            }
+
             return res.status(400).send('Copy error');
         }
 

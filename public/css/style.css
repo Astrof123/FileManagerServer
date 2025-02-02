@@ -112,6 +112,10 @@
     padding-left: 12px;
 }
 
+.metadata {
+    user-select: none;
+}
+
 .metadata_name {
     width: 40%;
 }
@@ -234,6 +238,7 @@
     margin: 0px 8px;
     cursor: pointer;
     display: block;
+    user-select: none;
 }
 
 .tool:hover {
@@ -345,4 +350,8 @@
     top: 0px;
     left: 0px;
     opacity: 0;
+}
+
+.tool:active {
+    opacity: 0.6;
 }

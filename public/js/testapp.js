@@ -108,7 +108,8 @@ class MyFileManagerServer extends FileManagerServer {
             return true;
         } 
         else {
-            throw new Error(`Ошибка сервера: ${res.status}`);
+            const errorText = await res.text();
+            throw new Error(`HTTP Error: ${res.status} - ${res.statusText}, Body: ${errorText}`);
         }
     }
 
@@ -175,7 +176,8 @@ class MyFileManagerServer extends FileManagerServer {
             return true;
         } 
         else {
-            throw new Error(`Ошибка сервера: ${res.status}`);
+            const errorText = await res.text();
+            throw new Error(`HTTP Error: ${res.status} - ${res.statusText}, Body: ${errorText}`);
         }
     }
 }
