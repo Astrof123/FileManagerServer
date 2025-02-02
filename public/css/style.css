@@ -130,6 +130,7 @@
 
 .file_metadata {
     overflow: hidden;
+    user-select: none;
 }
 
 .file_block {
@@ -149,6 +150,7 @@
 .file_icon {
     width: 4%;
     margin-right: 2%;
+    user-select: none;
 }
 
 .file_name {
@@ -262,6 +264,7 @@
 
 .path_folder {
     color: #ffffff;
+    user-select: none;
 }
 
 .path_folder:hover {
@@ -312,7 +315,7 @@
     padding: 8px;
     gap: 8px;
     align-items: center;
-    width: 143px;
+    width: 100%;
     user-select: none;
     position: relative;
 }

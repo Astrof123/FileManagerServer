@@ -130,12 +130,35 @@ class MyFileManagerServer extends FileManagerServer {
             return true;
         } 
         else {
-            throw new Error(`Ошибка сервера: ${res.status}`);
+            const errorText = await res.text();
+            throw new Error(`HTTP Error: ${res.status} - ${res.statusText}, Body: ${errorText}`);
         }
     }
 
     async renameFileOrFolder(oldPath, newPath) {
         const url = '/renameFileOrFolder';
+    
+        const body = JSON.stringify({ oldPath: oldPath, newPath: newPath });
+    
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: body
+        });
+
+        if (res.ok) {
+            console.log("Всё ок!");
+            return true;
+        } 
+        else {
+            throw new Error(`Ошибка сервера: ${res.status}`);
+        }
+    }
+
+    async duplicateFileOrFolder(oldPath, newPath) {
+        const url = '/duplicateFileOrFolder';
     
         const body = JSON.stringify({ oldPath: oldPath, newPath: newPath });
     

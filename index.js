@@ -14,16 +14,44 @@ let onlyFile = false;
 function findDuplicates(name, filePath) {
     const files = fs.readdirSync(filePath);
     let count_duplicate = 0;
+    let splittedName = name.split(".");
     let buffer_check = name;
 
     while (files.includes(buffer_check)) {
         count_duplicate += 1;
-        buffer_check = name + ` (${count_duplicate})`
+        if (splittedName.length === 1) {
+            buffer_check = `${name} (${count_duplicate})`
+        }
+        else {
+            buffer_check = `${splittedName.slice(0, splittedName.length - 1).join(".")} (${count_duplicate}).${splittedName[splittedName.length - 1]}`
+        }
     }
 
     return buffer_check;
 }
 
+
+function copyDir(sourceDir, destinationDir) {
+    try {
+        fs.mkdirSync(destinationDir, { recursive: true });
+        const entries = fs.readdirSync(sourceDir, { withFileTypes: true });
+    
+
+        for (const entry of entries) {
+            const sourcePath = path.join(sourceDir, entry.name);
+            const destinationPath = path.join(destinationDir, entry.name);
+    
+            if (entry.isDirectory()) {
+                copyDir(sourcePath, destinationPath);
+            } 
+            else if (entry.isFile()) {
+                fs.copyFile(sourcePath, destinationPath);
+            }
+        }
+    } catch (err) {
+        throw err;
+    }
+}
 
 
 const storage = multer.diskStorage({
@@ -153,10 +181,8 @@ app.post('/upload', upload.array('files'), (req, res) => {
 
 app.post('/removeFileOrFolder', (req, res) => {
     const data = req.body;
-
     try {
         const filePath = __dirname + files_root + data.path;
-
         let filestats = fs.statSync(filePath);
 
         if (filestats.isFile()) {
@@ -204,6 +230,41 @@ app.post('/renameFileOrFolder', (req, res) => {
     } 
 });
 
+app.post('/duplicateFileOrFolder', (req, res) => {
+    const data = req.body;
+    try {
+        const fileOldPath = __dirname + files_root + data.oldPath;
+        
+        let paths = data.newPath.split("/");
+        let filename = findDuplicates(paths[paths.length - 1], __dirname + files_root + paths.slice(0, paths.length - 1).join("/"));
+        paths[paths.length - 1] = filename;
+
+        const fileNewPath = __dirname + files_root + paths.join("/");
+        let filestats = fs.statSync(fileOldPath);
+
+        try {
+            if (filestats.isFile()) { 
+                fs.copyFile(fileOldPath, fileNewPath, (err) => {
+                    if (err) {
+                        console.error('Ошибка при копировании файла:', err);
+                        return;
+                    }
+                    console.log('Файл успешно скопирован.');
+                });
+            }
+            else {
+                copyDir(fileOldPath, fileNewPath);
+            }
+        }
+        catch (err) {
+            return res.status(400).send('Copy error');
+        }
+
+        return res.send('File or folder successfully duplicated.');
+    } catch (error) {
+        return res.status(400).send('Unexpected error');
+    } 
+});
 
 const PORT = 3000
 
