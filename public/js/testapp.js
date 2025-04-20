@@ -1,6 +1,6 @@
+import { FileManager, FileManagerServer } from 'https://unpkg.com/vanilla-filemanager';
 
-
-class MyFileManagerServer extends FileManagerLibrary.FileManagerServer {
+class MyFileManagerServer extends FileManagerServer {
     async getFolders(path) {
         const url = '/get-folders';
     
@@ -110,8 +110,8 @@ class MyFileManagerServer extends FileManagerLibrary.FileManagerServer {
             return true;
         } 
         else {
-            const errorText = await res.text();
-            throw new Error(`HTTP Error: ${res.status} - ${res.statusText}, Body: ${errorText}`);
+            const errorText = await response.text();
+            throw new Error(`HTTP Error: ${response.status} - ${response.statusText}, Body: ${errorText}`);
         }
     }
 
@@ -408,7 +408,7 @@ function main() {
     const options = {
         rootFolderName: "Root",
         icons: icons,
-        language: "es",
+        language: "ru",
         addressPaneOptions: {
             addressPaneEnabled: true,
             searchingEnabled: true,
@@ -441,7 +441,7 @@ function main() {
     const filemanagerRoot = document.querySelector(".somediv");
      
     const myFileManagerServer = new MyFileManagerServer();
-    const filemanager = new FileManagerLibrary.FileManager(filemanagerRoot, myFileManagerServer, options, customStyles, customLanguages);
+    const filemanager = new FileManager(filemanagerRoot, myFileManagerServer, options, customStyles, customLanguages);
 
 }
 
