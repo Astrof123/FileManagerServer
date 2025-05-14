@@ -345,9 +345,9 @@ function main() {
     }
 
     const customStyles = {
-        "fm_folders_nav": {
-            border: "3px solid red"
-        }
+        // "fm_files_tiles": {
+        //     "background-color": "#fff",
+        // }
     }
 
     const customLanguages = {
@@ -408,7 +408,7 @@ function main() {
     const options = {
         rootFolderName: "Root",
         icons: icons,
-        language: "ru",
+        language: "en",
         addressPaneOptions: {
             addressPaneEnabled: true,
             searchingEnabled: true,
@@ -435,11 +435,26 @@ function main() {
             },
         },
         navigationPaneEnabled: true,
+        theme: "dark",
+        // colors: {
+        //     hover: "#3e3e3e",
+        //     border: "#2B2B2B",
+        //     main_background: "#989899",
+        //     selected: "#4a4a4a",
+        //     text_color: "#ffffff"
+        // },
+        sizing: {
+            tools: "medium",
+            address: "medium",
+            navigation_pane: "medium",
+            content_pane: "medium",
+            settings_panel: "medium"
+        }
     }
 
 
     const filemanagerRoot = document.querySelector(".somediv");
-     
+    debugger;
     const myFileManagerServer = new MyFileManagerServer();
     const filemanager = new FileManager(filemanagerRoot, myFileManagerServer, options, customStyles, customLanguages);
 

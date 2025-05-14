@@ -94,6 +94,7 @@ function findFilesAndFolders(startPath, searchTerm) {
     return results;
 }
 
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const data = req.body;
@@ -120,25 +121,27 @@ const storage = multer.diskStorage({
         }
     },
     filename: function (req, file, cb) {
+        let filename = Buffer.from(file.originalname, 'latin1').toString('utf8');
         if (onlyFile) {
             const data = req.body;
             let uploadPath = __dirname + files_root + data.path;
 
-            let name = findDuplicates(file.originalname, uploadPath);
+            let name = findDuplicates(filename, uploadPath);
 
             cb(null, name.trim());
         }
         else {
-            cb(null, file.originalname.trim());
+            cb(null, filename.trim());
         } 
     }
 });
+
 
 const upload = multer({ storage: storage });
 const app = express()
 
 app.set('view engine', 'ejs')
-app.use(express.static('public'))+
+app.use(express.static('public'))
 app.use(express.json()); 
 
 
@@ -528,7 +531,7 @@ app.post('/create-empty-folder', (req, res) => {
     } 
 });
 
-const PORT = 3000
+const PORT = 3002
 
 app.listen(PORT, () => {
     console.log(`Server started: http://localhost:${PORT}`)
